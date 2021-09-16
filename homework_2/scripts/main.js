@@ -5,6 +5,7 @@ var THUMBNAIL_LINK_SELECTOR = '[data-image-role="trigger"]';
 var HIDDEN_DETAIL_CLASS = 'hidden-detail';
 var TINY_EFFECT_CLASS = 'is-tiny';
 var ESC_KEY = 27;
+var CURRENT_DETAIL_INDEX = 0;
 
 function setDetails(imgURL, titleText) {
     'use strict';
@@ -27,6 +28,7 @@ function titleFromThumb(thumbnail) {
 
 function setDetailsFromThumb(thumbnail) {
     'use strict';
+    CURRENT_DETAIL_INDEX = getThumbnailsArray().indexOf(thumbnail);
     setDetails(imageFromThumb(thumbnail), titleFromThumb(thumbnail));
 }
    
@@ -72,11 +74,46 @@ function addKeyPressHandler() {
     });
 }
 
+function addDetailImageButtonHandler(thumbnailArray) {
+    'use strict';
+    var rightButton = document.querySelector('[class="right-button');
+    var leftButton = document.querySelector('[class="left-button"');
+
+    rightButton.addEventListener('click', function () {click_button_right(thumbnailArray)});
+
+    leftButton.addEventListener('click', function () {click_button_left(thumbnailArray)});
+}
+
+function click_button_right(thumbnailArray) {
+    console.log(thumbnailArray);
+    if (CURRENT_DETAIL_INDEX == thumbnailArray.length - 1) {
+        CURRENT_DETAIL_INDEX = 0;
+    } else {
+        CURRENT_DETAIL_INDEX++;
+    }
+
+    setDetailsFromThumb(thumbnailArray[CURRENT_DETAIL_INDEX]);
+    showDetails();
+}
+
+function click_button_left(thumbnailArray) {
+    console.log('left');
+    if (CURRENT_DETAIL_INDEX == 0) {
+        CURRENT_DETAIL_INDEX = thumbnailArray.length - 1;
+    } else {
+        CURRENT_DETAIL_INDEX--;
+    }
+
+    setDetailsFromThumb(thumbnailArray[CURRENT_DETAIL_INDEX]);
+    showDetails();
+}
+
 function initializeEvents() {
     'use strict';
     var thumbnails = getThumbnailsArray();
     thumbnails.forEach(addThumbClickHandler);
     addKeyPressHandler();
+    addDetailImageButtonHandler(thumbnails);
 }
 
 initializeEvents();
